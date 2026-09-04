@@ -4,9 +4,9 @@ This project demonstrates basic SQL and database testing skills.
 
 ## Project Structure
 
-- `data/` — test data
-- `dml/` — SQL queries for working with data
-- `schema/` — database structure, tables and relationships
+- `DATA` — test data
+- `DML` — SQL queries for working with data
+- `SCHEMA` — database structure, tables and relationships
 
 ## Tools
 
