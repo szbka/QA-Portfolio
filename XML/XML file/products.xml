@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<products>
+    <product id="101">
+        <name>Laptop Lenovo</name>
+        <price>1200</price>
+        <currency>USD</currency>
+        <category>Electronics</category>
+        <inStock>true</inStock>
+    </product>
+
+    <product id="102">
+        <name>Wireless Mouse</name>
+        <price>35</price>
+        <currency>USD</currency>
+        <category>Accessories</category>
+        <inStock>true</inStock>
+    </product>
+
+    <product id="103">
+        <name>Mechanical Keyboard</name>
+        <price>89</price>
+        <currency>USD</currency>
+        <category>Accessories</category>
+        <inStock>false</inStock>
+    </product>
+</products>
