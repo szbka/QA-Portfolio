@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<users>
+    <user id="1">
+        <name>Lola Bann</name>
+        <email>lola.bann@example.com</email>
+        <age>28</age>
+        <role>customer</role>
+        <active>true</active>
+    </user>
+
+    <user id="2">
+        <name>Anna Brown</name>
+        <email>anna.brown@example.com</email>
+        <age>32</age>
+        <role>admin</role>
+        <active>true</active>
+    </user>
+
+    <user id="3">
+        <name>Michael Tori</name>
+        <email>michael.tori@example.com</email>
+        <age>41</age>
+        <role>customer</role>
+        <active>false</active>
+    </user>
+</users>
