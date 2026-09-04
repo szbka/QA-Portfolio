@@ -1,0 +1,80 @@
+DROP SCHEMA IF EXISTS store CASCADE;
+
+--Видалити існуючу таблицю
+
+CREATE SCHEMA store;
+
+--Створити таблицю
+
+CREATE TABLE store.customers (
+customer_id INTEGER GENERATED ALWAYS AS IDENTITY
+CONSTRAINT pk_customer_id PRIMARY KEY,
+full_name TEXT NOT NULL,
+email TEXT NOT NULL,
+phone TEXT,
+city TEXT NOT NULL,
+registration_date DATE DEFAULT CURRENT_DATE
+);
+
+--Створити таблицю Customers
+
+CREATE TABLE store.categories (
+category_id INTEGER GENERATED ALWAYS AS IDENTITY
+CONSTRAINT pk_category_id PRIMARY KEY,
+category_name TEXT NOT NULL,
+CONSTRAINT uniq_category_name UNIQUE (category_name),
+description TEXT
+);
+
+--Створити таблицю Categories
+
+CREATE TABLE store.products (
+product_id INTEGER GENERATED ALWAYS AS IDENTITY
+CONSTRAINT pk_product_id PRIMARY KEY,
+category_id INTEGER NOT NULL
+CONSTRAINT fk_category_id
+REFERENCES store.categories (category_id),
+product_name TEXT NOT NULL,
+price NUMERIC
+CONSTRAINT chk_price CHECK (price > 0),
+stock_quantity INTEGER DEFAULT 0
+CONSTRAINT chk_stock_quantity CHECK (stock_quantity >= 0),
+is_active BOOLEAN DEFAULT TRUE
+);
+
+--Створити таблицю Products
+
+CREATE TABLE store.orders (
+order_id INTEGER GENERATED ALWAYS AS IDENTITY
+CONSTRAINT pk_order_id PRIMARY KEY,
+customer_id INTEGER NOT NULL
+CONSTRAINT fk_customer_id
+REFERENCES store.customers (customer_id),
+order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+status TEXT NOT NULL DEFAULT 'new'
+CONSTRAINT chk_status CHECK ( status IN
+('new','processing', 'shipped', 'completed', 'cancelled')
+),
+delivery_city TEXT NOT NULL
+);
+
+--Створити таблицю Orders
+
+CREATE TABLE store.order_items (
+order_item_id INTEGER GENERATED ALWAYS AS IDENTITY
+CONSTRAINT pk_order_item_id PRIMARY KEY,
+order_id INTEGER NOT NULL
+CONSTRAINT fk_order_id 
+REFERENCES store.orders (order_id)
+ON DELETE CASCADE,
+product_id INTEGER NOT NULL
+CONSTRAINT fk_product_id
+REFERENCES store.products (product_id),
+quantity INTEGER
+CONSTRAINT chk_quantity CHECK (quantity > 0),
+unit_price NUMERIC 
+CONSTRAINT chk_unit_price CHECK (unit_price > 0),
+CONSTRAINT uq_order_product UNIQUE (order_id, product_id)
+);
+
+--Створити таблицю Order items
