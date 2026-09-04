@@ -1,0 +1,276 @@
+-- Завдання 1. Вивести всіх покупців
+
+SELECT *
+FROM store.customers;
+
+--Завдання 2. Вивести активні товари
+
+SELECT product_name,
+price,
+is_active
+FROM store.products
+WHERE is_active = TRUE;
+
+--Завдання 3. Знайти дорогі товари
+
+SELECT product_id,
+product_name,
+price
+FROM store.products
+WHERE price > 10000
+ORDER BY price DESC;
+
+--Завдання 4. Знайти покупців з Києва
+
+SELECT customer_id,
+full_name,
+email,
+city
+FROM store.customers
+WHERE city = 'Київ';
+
+--Завдання 5. Знайти товари за частиною назви
+
+SELECT product_id,
+product_name,
+price
+FROM store.products
+WHERE product_name ILIKE 'навушники%';
+
+--Завдання 6. Вивести 5 найдорожчих товарів
+
+SELECT product_name,
+price,
+FROM store.products
+ORDER BY price DESC
+LIMIT 5;
+
+--Завдання 7. Порахувати к-сть покупців
+
+SELECT COUNT (customer_id) AS all_customers
+FROM store.customers;
+
+--Завдання 8. Знайти середню ціну товарів
+
+SELECT ROUND(AVG(price), 2) AS average_price
+FROM store.products;
+
+--Завдання 9. Знайти мінімальну та максимальну ціну
+
+SELECT MIN(price) AS min_price,
+MAX(price) AS max_price
+FROM store.products;
+
+--Завдання 10. Порахувати товари у кожнай категорії
+
+SELECT 
+category_name AS category_name,
+COUNT(product_id) AS product_count
+FROM store.categories AS c
+LEFT JOIN store.products AS p
+ON c.category_id = p.category_id
+GROUP BY c.category_id, category_name
+ORDER BY product_count DESC;
+
+--Завдання 11. Вивести товари разом із категоріями
+
+SELECT product_id,
+product_name,
+category_name,
+price,
+stock_quantity
+FROM store.products AS p
+INNER JOIN store.categories AS c
+ON p.category_id = c.category_id
+ORDER BY category_name, product_name;
+
+--Завдання 12. Вивести замовлення разом з покупцями
+
+SELECT order_id,
+order_date,
+status,
+full_name,
+email,
+delivery_city
+FROM store.orders AS o
+INNER JOIN store.customers AS c
+ON o.customer_id = c.customer_id
+ORDER BY order_date DESC;
+
+--Завдання 13. Розрахувати суму кожного замовлення
+
+SELECT o.order_id,
+c.full_name,
+o.status,
+SUM(quantity * unit_price)
+FROM store.orders AS o
+INNER JOIN store.customers AS c
+ON o.customer_id = c.customer_id
+INNER JOIN store.order_items as i
+ON o.order_id = i.order_id
+GROUP BY o.order_id,
+c.full_name,
+o.status;
+
+--Завдання 14. Знайти замовлення дорожчі за 30000 грн
+
+SELECT o.order_id,
+c.full_name,
+SUM(quantity * unit_price) AS total_amount
+FROM store.orders AS o
+INNER JOIN store.customers AS c
+ON o.customer_id = c.customer_id
+INNER JOIN store.order_items AS i
+ON o.order_id = i.order_id
+GROUP BY o.order_id,
+c.full_name
+HAVING SUM(quantity * unit_price) > 30000
+ORDER BY total_amount DESC;
+
+--Завдання 15. Порахувати к-сть замовлень кожного покупця
+
+SELECT c.full_name,
+COUNT(o.order_id) AS total_count
+FROM store.customers AS c
+LEFT JOIN store.orders AS o
+ON c.customer_id = o.customer_id
+GROUP BY c.customer_id,
+c.full_name;
+
+--Завдання 16. Знайти покупців без замовлень
+
+SELECT c.customer_id,
+c.full_name,
+c.email
+FROM store.customers AS c
+LEFT JOIN store.orders AS o
+ON c.customer_id = o.customer_id
+WHERE o.order_id IS NULL;
+
+--Завдання 17. Знайти товари, що не додавали до замовлень
+
+SELECT p.product_id,
+p.product_name,
+p.price
+FROM store.products AS p
+LEFT JOIN store.order_items AS i
+ON p.product_id = i.product_id
+WHERE i.product_id IS NULL;
+
+--Завдання 18. Знайти товари, яких немає на складі
+
+SELECT product_name,
+price,
+stock_quantity
+FROM store.products
+WHERE stock_quantity = 0;
+
+--Завдання 19. Додати нового покупця
+
+INSERT INTO store.customers (full_name, email, phone, city, registration_date)
+VALUES ('Тихонова Марія', 'maria228@gamil.com', '0639854785', 'Черкаси', '2026-07-27');
+
+--Знайти доданого покупця
+
+SELECT full_name,
+email,
+phone,
+city,
+registration_date
+FROM store.customers 
+WHERE full_name LIKE 'Тихонова Марія';
+
+--Завдання 20. Додати новий товар
+
+INSERT INTO store.products (category_id, product_name, price, stock_quantity, is_active)
+VALUES ('1', 'Ноутбук Lenovo 7895', 48569.00, 45, TRUE);
+
+--Перевірити, що товар додано до правильної категорії.
+
+SELECT p.category_id,
+p.product_name, 
+p.price,
+p.stock_quantity, 
+p.is_active,
+c.category_name
+FROM store.products AS p
+INNER JOIN store.categories AS c
+ON p.category_id = c.category_id
+WHERE product_name LIKE 'Ноутбук Lenovo 7895';
+
+--Завдання 21. Змінити ціну товару
+
+UPDATE store.products
+SET price = price * 1.10
+WHERE product_id = 25;
+
+-Перевірка зміни 
+
+SELECT product_name,
+price
+FROM store.products
+WHERE product_id = 25;
+
+--Завдання 22. Змінити статус замовлення
+
+UPDATE store.orders
+SET status = 'processing'
+WHERE order_id = 2
+AND status = 'new';
+
+--Перевірка зміни
+
+SELECT order_id,
+'new' AS old_status,
+status AS new_status
+FROM store.orders
+WHERE order_id = 2;
+
+--Завдання 23. Зменшити к-сть товару на складі
+
+UPDATE store.products
+SET stock_quantity = stock_quantity-2
+WHERE product_id = 28;
+
+--Перевірка зміни
+
+SELECT product_name,
+stock_quantity
+FROM store.products
+WHERE product_id = 28;
+
+--Завдання 24. Видалити покупця 
+
+--Перевірити, що покупець не має пов'язаних замовлень
+
+SELECT order_id
+FROM store.orders
+WHERE customer_id = 9;
+
+--Видалити покупця
+
+DELETE FROM store.customers
+WHERE customer_id = 9;
+
+--Перевірити успішне видалення
+
+SELECT *
+FROM store.customers
+WHERE customer_id = 9;
+
+--Завдання 25. Видалити скасоване замовлення
+
+DELETE FROM store.orders
+WHERE order_id = 5;
+
+/* Перевірити
+- що замовлення видалено;
+- що всі позиції цього замовлення також видалилися автоматично;
+- що інші замовлення залишилися без змін. */
+
+SELECT *
+FROM store.orders
+WHERE order_id = 5;
+
+SELECT *
+FROM store.orders;
